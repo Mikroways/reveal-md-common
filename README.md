@@ -24,6 +24,7 @@ npm i --save @mikroways/reveal-md-common
 Add the followig scripts and corresponding hooks into `package.json`:
 
 ```json
+    ...,
     "prestart": "postinstall",
     "prestatic": "postinstall",
     "start": "reveal-md src/start.md --preprocessor preproc.js --watch",
@@ -31,16 +32,16 @@ Add the followig scripts and corresponding hooks into `package.json`:
     ...
   },
   "prepare": {
-    "reveal.js-mikroways/preproc.js": "link preproc.js",
-    "reveal.js-mikroways/reveal-md.json": "link reveal-md.json"
+    "@mikroways/reveal-md-common/preproc.js": "link preproc.js",
+    "@mikroways/reveal-md-common/reveal-md.json": "link reveal-md.json"
   },
   "prestart": {
-    "reveal.js-mikroways/preproc.js": "link preproc.js",
-    "reveal.js-mikroways/reveal-md.json": "link reveal-md.json"
+    "@mikroways/reveal-md-common/preproc.js": "link preproc.js",
+    "@mikroways/reveal-md-common/reveal-md.json": "link reveal-md.json"
   },
   "prestatic": {
-    "reveal.js-mikroways/preproc.js": "link preproc.js",
-    "reveal.js-mikroways/reveal-md.json": "link reveal-md.json"
+    "@mikroways/reveal-md-common/preproc.js": "link preproc.js",
+    "@mikroways/reveal-md-common/reveal-md.json": "link reveal-md.json"
   },
   ...
 ```
