@@ -8,7 +8,7 @@
     "https://cdn.jsdelivr.net/npm/reveal.js-mermaid-plugin@2.1.0/plugin/mermaid/mermaid.min.js",
     "https://cdn.jsdelivr.net/npm/asciinema-player@3.6.3/dist/bundle/asciinema-player.min.js",
     "https://cdn.jsdelivr.net/gh/mikroways/reveal.js-plugins@1.0.0/audio-slideshow/plugin.min.js",
-    "https://cdn.jsdelivr.net/gh/mikroways/reveal.js-copycode@v1.1.7/plugin/copycode/copycode.js",
+    "https://cdn.jsdelivr.net/npm/reveal.js-copycode@v1.1.6/plugin/copycode/copycode.min.js",
     "src/js/script.js"
   ],
   "css": [
