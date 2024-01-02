@@ -1,0 +1,44 @@
+{
+  "staticDirs": [
+    "src/images",
+    "src/audio",
+    "src/code"
+  ],
+  "scripts": [
+    "https://cdn.jsdelivr.net/npm/reveal.js-mermaid-plugin@2.1.0/plugin/mermaid/mermaid.min.js",
+    "https://cdn.jsdelivr.net/npm/asciinema-player@3.6.3/dist/bundle/asciinema-player.min.js",
+    "https://cdn.jsdelivr.net/gh/mikroways/reveal.js-plugins@1.0.0/audio-slideshow/plugin.min.js",
+    "https://cdn.jsdelivr.net/gh/mikroways/reveal.js-copycode@v1.1.7/plugin/copycode/copycode.js",
+    "src/js/script.js"
+  ],
+  "css": [
+    "https://cdn.jsdelivr.net/npm/asciinema-player@3.6.3/dist/bundle/asciinema-player.min.css",
+    "https://cdn.jsdelivr.net/gh/mikroways/reveal.js-plugins@1.0.0/audio-slideshow/style.min.css"
+  ],
+  "theme": "https://cdn.jsdelivr.net/gh/mikroways/reveal.js-mikroways-theme/theme/mikroways.min.css",
+  "revealOptions": {
+    "transition": "concave",
+    "transitionSpeed": "slow",
+    "copycode": {
+      "display": "icons",
+      "text": {
+        "copied": "Copiado"
+      },
+      "style": {
+        "copybg": "rgba(0,0,0,0)",
+        "copycolor": "rgba(255,255,255, 0.5)",
+        "copiedbg": "rgba(0,200,0,0.5)",
+        "offset": 0.1,
+        "radius": 0.2
+      },
+      "clipboardjspath": "https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js",
+      "csspath": "https://cdn.jsdelivr.net/gh/mikroways/reveal.js-copycode@v1.1.7/plugin/copycode/copycode.min.css"
+    },
+    "audio": {
+      "autoplay": true,
+      "advance": -1
+    },
+    "mermaid": {}
+  },
+  "mikroways": {}
+}

@@ -1,0 +1,18 @@
+{
+  "name": "@mikroways/reveal-md-common",
+  "version": "1.0.0",
+  "description": "Default configuration to work with Mikroways presentations",
+  "main": "preproc.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "mikroways",
+    "reveal-md"
+  ],
+  "dependencies": {
+    "postinstall": "^0.9.0"
+  },
+  "author": "Christian Rodriguez",
+  "license": "ISC"
+}
