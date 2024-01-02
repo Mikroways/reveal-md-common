@@ -7,10 +7,12 @@ change themes, plugin settings and other options upgrading this package.
 ## Common configurations
 
 * **`reveal-md.json`:** this file allows a [reveal-md](https://github.com/webpro/reveal-md)
-  project to set common configurations.
+  dproject to set common configurations.
 * **`preproc.js`:** reveal-md preprocessor to be used within reveal-md
   presentations. It allows to easily import code sinppets from external files,
   other Markdown files, set slides styles, audio slides, and more.
+* **`src/js/script.js`:** main javascript to load all plugins and custom
+  scripts.
 
 ## Usage
 
@@ -32,14 +34,17 @@ Add the followig scripts and corresponding hooks into `package.json`:
     ...
   },
   "prepare": {
+    "@mikroways/reveal-md-common/src/js/script.js": "link src/js/script.js",
     "@mikroways/reveal-md-common/preproc.js": "link preproc.js",
     "@mikroways/reveal-md-common/reveal-md.json": "link reveal-md.json"
   },
   "prestart": {
+    "@mikroways/reveal-md-common/src/js/script.js": "link src/js/script.js",
     "@mikroways/reveal-md-common/preproc.js": "link preproc.js",
     "@mikroways/reveal-md-common/reveal-md.json": "link reveal-md.json"
   },
   "prestatic": {
+    "@mikroways/reveal-md-common/src/js/script.js": "link src/js/script.js",
     "@mikroways/reveal-md-common/preproc.js": "link preproc.js",
     "@mikroways/reveal-md-common/reveal-md.json": "link reveal-md.json"
   },
