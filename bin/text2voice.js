@@ -110,7 +110,7 @@ async function textfile2audiofile({el, file, voiceSettings, force}) {
   // Restore logger;
   console.log = disabledLogger;
    if (res && res.status && res.status.toLowerCase() == 'ok') console.log(chalk.bgGreen.bold(`OK: `)+chalk.green(file));
-   else console.log(chalk.gbRed.bold(`ERROR: `)+chalk.red(file));
+   else console.log(chalk.bgRed.bold(`ERROR: `)+chalk.red(file));
 }
 
 async function start(opts) {
