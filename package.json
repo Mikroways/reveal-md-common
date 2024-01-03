@@ -1,8 +1,11 @@
 {
   "name": "@mikroways/reveal-md-common",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Default configuration to work with Mikroways presentations",
   "main": "preproc.js",
+  "bin": {
+    "text2voice": "bin/text2voice.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
