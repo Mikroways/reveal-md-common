@@ -7,7 +7,9 @@ require('axios-debug-log')({
   }
 })
 
+
 const minimist = require('minimist'),
+      chalk = require('chalk'),
       ElevenLabs = require("elevenlabs-node"),
       fs = require('fs'),
       {
@@ -38,16 +40,7 @@ var opts = minimist(process.argv, {
                               force: 'f',
                               help: 'h'
                             }
-                    }),
-    textFiles = opts._.slice(2),
-    key   = opts['api-key'] ? opts['api-key']: process.env.ELEVEN_API_KEY;
-    voice = opts.voice,
-    model = opts.model,
-    force = opts.force,
-    voiceSpeakerBoost     = opts['voice-speacker-boost'],
-    voiceStability        = opts['voice-stability'],
-    voiceSimilarityBoost  = opts['voice-similarity-boost'],
-    voiceStyle            = opts['voice-sstyle'];
+                    });
 
 function help() {
   console.error("text2voice [opts] input-file1.text input-file2.text");
@@ -64,107 +57,109 @@ function help() {
 }
 
 function error(msg) {
-  console.error(`Error: ${msg}`);
+  console.error(chalk.red(`Error: ${msg}`));
   help();
   process.exit(2);
 }
 
-async function waitFor(seconds) {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      console.log(".");
-      resolve();
-    }, seconds*1000);
-  });
+async function listVoices(el) {
+  let res = await el.getVoices();
+  console.log(chalk.yellow("\nVoices"));
+  console.log('\n');
+  console.log(res.voices.map(e => 
+    chalk.green(`${e.voice_id}: `) + chalk.white(`${e.name}`)).join('\n'));
+}
+async function listModels(el) {
+  let res = await el.getModels();
+  console.log(chalk.yellow("\nModels"));
+  console.log(res.map(e => 
+    chalk.green(`${e.model_id}: `)+ chalk.white(`${e.name}`)).join('\n'));
 }
 
-async function waitForSync(seconds) {
-  await waitFor(seconds);
+async function getVoiceSettings(el, voice) {
+  let voiceSettings ={},
+      settings = await el.getVoiceSettings({voiceId: voice});
+  voiceSettings.stability =
+    Number(voiceStability !== undefined ?
+      voiceStability : settings.stability);
+  voiceSettings.similarityBoost =
+    Number(voiceSimilarityBoost !== undefined ?
+      voiceSimilarityBoost : settings.similarity_boost);
+  voiceSettings.style =
+    Number(voiceStyle !== undefined ?
+      voiceStyle : settings.style);
+  voiceSettings.speackerBoost =
+    Boolean(voiceSpeakerBoost !== undefined ?
+      voiceSpeakerBoost : settings.use_speaker_boost);
+  return voiceSettings;
 }
 
-async function text2voice(el, opts) {
-  return new Promise( (r,e) => {
-      el.textToSpeech(opts).then(
-        (ok) => {
-          r(ok);
-        },
-        (fail) => e(fail));
-  });
+async function textfile2audiofile({el, file, voiceSettings, force}) {
+  let audioFile = file.replace(/\.(text|txt)$/i, "").concat(`-${voice}.mp3`);
+  let audioIsNewer = fs.existsSync(audioFile) && 
+    ( fs.statSync(audioFile).mtimeMs > fs.statSync(file).mtimeMs );
+  if (!force && audioIsNewer) return console.error(
+    chalk.cyan(`Skipping file: ${file}. User -f to force`));
+  // Patch to avoid log errors from elevenlabs module
+  let disabledLogger = console.log;
+  console.log = function() {};
+  let res = await el.textToSpeech(Object.assign({
+                fileName: audioFile,
+                textInput: fs.readFileSync(file,'utf8')
+              },voiceSettings));
+  // Restore logger;
+  console.log = disabledLogger;
+   if (res && res.status && res.status.toLowerCase() == 'ok') console.log(chalk.bgGreen.bold(`OK: `)+chalk.green(file));
+   else console.log(chalk.gbRed.bold(`ERROR: `)+chalk.red(file));
 }
 
-async function text2voiceSync(textFiles, el, opts) {
-  for (const file of textFiles) {
-      let audioFile = file.replace(/\.(text|txt)$/i, "").concat(`-${voice}.mp3`);
-      let audioIsNewer = fs.existsSync(audioFile) &&
-        ( fs.statSync(audioFile).mtimeMs > fs.statSync(file).mtimeMs );
-      if (!force && audioIsNewer) console.error(`Skiping file: ${file} because ${audioFile} is newewer. User -f to force`);
-      else {
-        waitForSync(2);
-        let res = await text2voice(el,Object.assign({
-          fileName: audioFile,
-          textInput: fs.readFileSync(file,'utf8'),
-        },opts));
-        if (res.status.toLowerCase() == 'ok') console.log('Y');
-        else console.log('N');
-      }
-    }
-}
+async function start(opts) {
+  let textFiles = opts._.slice(2),
+      key   = opts['api-key'] ? opts['api-key']: process.env.ELEVEN_API_KEY;
+      voice = opts.voice,
+      model = opts.model,
+      force = opts.force,
+      voiceSpeakerBoost     = opts['voice-speacker-boost'],
+      voiceStability        = opts['voice-stability'],
+      voiceSimilarityBoost  = opts['voice-similarity-boost'],
+      voiceStyle            = opts['voice-sstyle'];
 
-if (opts.help) {
-  help();
-  process.exit(0);
-}
-
-if (!key) error("API key must be set");
-
-var el = new ElevenLabs({ apiKey: key });
-
-if (voice && ['?','help'].includes(voice.toLowerCase()) ) {
-  el.getVoices().then((res) => {
-      console.log("================================================================");
-      console.log("Voices");
-      console.log("----------------------------------------------------------------");
-      console.log(res.voices.map(e => `${e.voice_id}: ${e.name}`).join('\n'));
+    if (opts.help) {
+      help();
       process.exit(0);
-  });
-}else {
-  if (model && ['?','help'].includes(model.toLowerCase()) ) {
-    el.getModels().then((res) => {
-        console.log("================================================================");
-        console.log("Models");
-        console.log("----------------------------------------------------------------");
-        console.log(res.map(e => `${e.model_id}: ${e.name}`).join('\n'));
-        process.exit(0);
-    });
-  }
-  else {
+    }
+
+    if (!key) error("API key must be set");
+
+    let el = new ElevenLabs({ apiKey: key });
+
+    if (voice && ['?','help'].includes(voice.toLowerCase()) ) await listVoices(el);
+    if (model && ['?','help'].includes(model.toLowerCase()) ) await listModels(el);
+    /* When listVoices or listModels are called, we shalle exit */
+    if (
+        (voice && ['?','help'].includes(voice.toLowerCase())) ||
+        (model && ['?','help'].includes(model.toLowerCase())) 
+        ) process.exit(0);
+
+    /* Check if model and voice are set */
     if (!voice && model) error("voice must be set");
     if (!model) error("model must be set");
 
-    el.getVoiceSettings({voiceId: voice}).then( settings => {
-      let voiceSettings = {};
-      voiceSettings.stability =
-        Number(voiceStability !== undefined ?
-          voiceStability : settings.stability);
-      voiceSettings.similarityBoost =
-        Number(voiceSimilarityBoost !== undefined ?
-          voiceSimilarityBoost : settings.similarity_boost);
-      voiceSettings.style =
-        Number(voiceStyle !== undefined ?
-          voiceStyle : settings.style);
-      voiceSettings.speackerBoost =
-        Boolean(voiceSpeakerBoost !== undefined ?
-          voiceSpeakerBoost : settings.use_speaker_boost);
-      return voiceSettings;
-    }).then( voiceSettings => {
-        waitForSync(1);
-        textFiles.forEach( t => {
-          let g = globSync(t,{});
-          text2voiceSync(g, el, Object.assign({
+    /* Get default VoiceSettings */
+    let voiceSettings = await getVoiceSettings(el, voice);
+    
+        /* Foreach textFile (maybe glob or file, do */
+    for (const t of textFiles) {
+      let g = globSync(t,{});
+      for (const file of g) await textfile2audiofile({
+            el: el, 
+            file: file, 
+            voiceSettings: Object.assign(voiceSettings, {
                 voiceId: voice,
                 modelId: model
-              },voiceSettings));
-        })
-    });
-  }
+              }),
+            force: force });
+    }
 }
+
+start(opts);

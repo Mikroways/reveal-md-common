@@ -12,6 +12,7 @@
   ],
   "dependencies": {
     "axios-debug-log": "^1.0.0",
+    "chalk": "^4",
     "elevenlabs-node": "^2.0.1",
     "glob": "^10.3.10",
     "minimist": "^1.2.8",
