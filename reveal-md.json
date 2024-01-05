@@ -37,6 +37,7 @@
     },
     "audio": {
       "autoplay": true,
+      "defaultAudios": false,
       "advance": -1
     },
     "mermaid": {}
