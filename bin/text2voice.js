@@ -23,7 +23,7 @@ const minimist = require('minimist'),
 
 
 var opts = minimist(process.argv, {
-                        boolean: ['force', 'help'],
+                        boolean: ['force', 'help', 'user-subscription'],
                         string: [
                           'voice-stability',
                           'voice-similarity-boost',
@@ -31,13 +31,15 @@ var opts = minimist(process.argv, {
                           'voice-speacker-boost',
                         ],
                         defaults: {
-                          force: false
+                          force: false,
+                          'user-subscription': false
                         },
                         alias: {
                               "api-key": 'k',
                               voice: 'v',
                               model: 'm',
                               force: 'f',
+                              'user-subscription': 'u',
                               help: 'h'
                             }
                     });
@@ -54,6 +56,7 @@ function help() {
   console.error("  --voice-similarity-boost Number. Override voice default value");
   console.error("  --voice-style Number. Override voice default value");
   console.error("  --voice-speacker-boost true|false. Override voice default value");
+  console.error("\n  --user-subscription | -u If this option is given show user subscription");
 }
 
 function error(msg) {
@@ -113,6 +116,11 @@ async function textfile2audiofile({el, file, voiceSettings, force}) {
    else console.log(chalk.bgRed.bold(`ERROR: `)+chalk.red(file));
 }
 
+async function showUserSubscription(el) {
+  let res = await el.getUserSubscription();
+  console.log(chalk.green(JSON.stringify(res, null, 4)));
+}
+
 async function start(opts) {
   let textFiles = opts._.slice(2),
       key   = opts['api-key'] ? opts['api-key']: process.env.ELEVEN_API_KEY;
@@ -122,7 +130,8 @@ async function start(opts) {
       voiceSpeakerBoost     = opts['voice-speacker-boost'],
       voiceStability        = opts['voice-stability'],
       voiceSimilarityBoost  = opts['voice-similarity-boost'],
-      voiceStyle            = opts['voice-sstyle'];
+      voiceStyle            = opts['voice-style'],
+      userSubscription       = opts['user-subscription'];
 
     if (opts.help) {
       help();
@@ -132,6 +141,12 @@ async function start(opts) {
     if (!key) error("API key must be set");
 
     let el = new ElevenLabs({ apiKey: key });
+
+    if (userSubscription) {
+      await showUserSubscription(el);
+      process.exit(0);
+    }
+
 
     if (voice && ['?','help'].includes(voice.toLowerCase()) ) await listVoices(el);
     if (model && ['?','help'].includes(model.toLowerCase()) ) await listModels(el);
