@@ -202,3 +202,17 @@ It also supports for globs:
 text2voice -k <API-key> -m eleven_multilingual_v2 -v XrExE9yKIg1WjnnlVkGX \
   src/audio/**/*text
 ```
+
+### Create mp3 symlinks
+
+After generating mp3 audios, each file will be named using `originalFile-{voice}.mp3`.
+Then a symlink can be used to get a name as the corresponding `.text` file using
+the following command:
+
+```bash
+VOICE="XrExE9yKIg1WjnnlVkGX" && find src/audio -name '*text' | \
+  sed "s/\(.*\)\.text/ln -fs \1-$VOICE.mp3 \1.mp3/" | \
+  sed 's@src/audio/@@' | sed 's@\(-fs \).*/\(.*mp3 src/\)@\1\2@'  
+```
+
+If output is correct, add `| bash` at the end of the command.
