@@ -1,6 +1,6 @@
 {
   "name": "@mikroways/reveal-md-common",
-  "version": "1.0.11",
+  "version": "1.1.0-dev",
   "description": "Default configuration to work with Mikroways presentations",
   "main": "preproc.js",
   "bin": {
@@ -19,7 +19,8 @@
     "elevenlabs-node": "^2.0.1",
     "glob": "^10.3.10",
     "minimist": "^1.2.8",
-    "postinstall": "^0.9.0"
+    "postinstall": "^0.9.0",
+    "reveal-md": "^6.0.1"
   },
   "author": "Christian Rodriguez",
   "license": "ISC"
