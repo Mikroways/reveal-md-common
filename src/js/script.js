@@ -39,6 +39,8 @@ function playAscinema(event) {
 Reveal.on('ready', setAsciinema);
 Reveal.on('slidechanged', playAscinema);
 
-options.plugins.push(RevealMermaid);
-options.plugins.push(RevealAudioSlideshow);
+if (Object.hasOwn(options, 'audio')) {
+  if ( Object.hasOwn(options.audio, 'enabled') && options.audio.enabled )
+    options.plugins.push(RevealAudioSlideshow);
+}
 options.plugins.push(CopyCode);
