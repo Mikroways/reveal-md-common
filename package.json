@@ -1,6 +1,6 @@
 {
   "name": "@mikroways/reveal-md-common",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "Default configuration to work with Mikroways presentations",
   "main": "preproc.js",
   "bin": {
