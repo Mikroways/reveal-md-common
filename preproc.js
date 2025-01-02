@@ -3,19 +3,11 @@ const path = require('path')
 
 const LINE_SEPARATOR = '\n'
 const FILE_REF_REGEX = /^FILE: (.+)$/
-const CODE_FILE_REF_REGEX = /^CODE: (\S+) (\S+)\s*(\d\S*)?\s*(class=(.*))?$/
+const CODE_FILE_REF_REGEX = /^CODE: (\S+)\s+(.+)$/
 const SLIDE_FMT_REF_REGEX = /^SLIDE_FMT: +([\w_-]+),?(.*)$/
 
-const escapeHtml = unsafe =>
-  unsafe
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;")
-
-const codeTemplate = (code, lang, { dataLineNumbers, cssClass }) => (
-`<pre><code class='${lang} hljs ${cssClass}' data-trim ${dataLineNumbers ? `data-line-numbers=${dataLineNumbers}` : '' }>${escapeHtml(code)}</code></pre>`)
+const codeTemplate = (code, args ) => (
+   `\`\`\`${args}\n${code}\n\`\`\``)
 
 const isFileReference = line => FILE_REF_REGEX.test(line)
 const isCodeFileReference = line => CODE_FILE_REF_REGEX.test(line)
@@ -36,18 +28,11 @@ const loadFileContent = (line, opts) => {
 const loadCodeFileContent = (line, opts) => {
     const basePath = path.join(opts.mikroways.basePath, opts.mikroways.codePath)
     const filePath = line.match(CODE_FILE_REF_REGEX)[1]
-    const lang = line.match(CODE_FILE_REF_REGEX)[2]
-    const prop = line.match(CODE_FILE_REF_REGEX)[3]
-    const cssClass = line.match(CODE_FILE_REF_REGEX)[4]
-    const props = {
-      editable: false,
-      dataLineNumbers: prop,
-      cssClass: cssClass ? line.match(CODE_FILE_REF_REGEX)[5].replace(/"|'/g,'') :''
-    }
+    const args = line.match(CODE_FILE_REF_REGEX)[2]
   try{
     const code = readFileSync(path.join(basePath, filePath), 'utf8')
 
-    return codeTemplate(code, lang, props)
+    return codeTemplate(code, args)
   } catch(err) {
     console.log(`Error loading code file from ${path.join(basePath, filePath)} at ${line.match(CODE_FILE_REF_REGEX)[0]}`)
     if (opts.mikroways.debug) console.log(err)
