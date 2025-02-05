@@ -7,7 +7,7 @@ const CODE_FILE_REF_REGEX = /^CODE: (\S+)\s+(.+)$/
 const SLIDE_FMT_REF_REGEX = /^SLIDE_FMT: +([\w_-]+),?(.*)$/
 
 const codeTemplate = (code, args ) => (
-   `\`\`\`${args}\n${code}\n\`\`\``)
+   `\`\`\`${args}\n${code.replace(/^----? *$/gm,"")}\n\`\`\``)
 
 const isFileReference = line => FILE_REF_REGEX.test(line)
 const isCodeFileReference = line => CODE_FILE_REF_REGEX.test(line)

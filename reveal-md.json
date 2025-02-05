@@ -15,7 +15,7 @@
     "https://cdn.jsdelivr.net/gh/mikroways/reveal.js-plugins@1.0.1/audio-slideshow/style.min.css"
   ],
   "highlightTheme": "github-dark-dimmed",
-  "theme": "https://cdn.jsdelivr.net/gh/mikroways/reveal.js-mikroways-theme@1.1.2/theme/mikroways.min.css",
+  "theme": "https://cdn.jsdelivr.net/gh/mikroways/reveal.js-mikroways-theme@1.1.3/theme/mikroways.min.css",
   "revealOptions": {
     "transition": "concave",
     "transitionSpeed": "slow",
